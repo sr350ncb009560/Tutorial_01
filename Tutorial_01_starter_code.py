@@ -5,22 +5,23 @@ from dist import *
 
 # Define a function witha root where the horizontal distanc equals R.
 def F(theta):
-    return
+  return dist(theta, c, g, v0) - R
 
-v0=
-c=
-g=
-R = 
-eps_x =    # The maximal error is stated in the assignment!
-eps_f = 
-kMax = 
+v0=100
+c= 0.01
+g= 9.81
+R =  85.0
+eps_x = 0.01 # The maximal error is stated in the assignment!
+eps_f = 0.1
+kMax = 40
 # First task: solution(s) for R=85.0 (m).
-theta, ... = bisect( ... )
+theta, err, res, conv = bisect(F, 0, np.pi/4, kMax, eps_x, eps_f)
 if conv:
     print("First solution: R=%f, theta=%f +/- %f." % (R,theta,err))
 else:
     print("Bisection did not converge!")
-theta, ... = bisect( ... )
+
+theta, err, res, conv = bisect(F, np.pi/4, np.pi/2, kMax, eps_x, eps_f)
 if conv:
     print("Second solution: R=%f, theta=%f +/- %f." % (R,theta,err))
 else:
@@ -34,24 +35,24 @@ plt.plot(angles,dists,'-*')
 plt.xlabel('angle')
 plt.ylabel('distance travelled')
 plt.show()
-# It seems the maximal reach is about 201(m). Let's try to automatically find the angles:
-RMax =   
-nPoints =   # Compute nPoints solutions on each "branch" (low and fast vs. high and looping).
-split =     # By the eye, this is the angle that separates the branches.
+# # It seems the maximal reach is about 201(m). Let's try to automatically find the angles:
+RMax = 201
+nPoints = 25  # Compute nPoints solutions on each "branch" (low and fast vs. high and looping).
+split = 0.63 # By the eye, this is the angle that separates the branches.
 Rs = np.linspace(0,RMax,nPoints)
 # Complete two loops, one for each branch. For the first run, the initial interval is [0,split],
 # for the second it is [split,pi/2].
 result = [[0,0]]
 for i in range(1,nPoints):
     R = Rs[i] # Note, that R is a global variable in this script.
-    theta, ... = bisect( ... )
+    theta, err, res, conv = bisect(F, 0, split, kMax, eps_x, eps_f)
     if conv:
         result.append([R,theta])
     else:
         print("Bisection did not converge for R=%f." % (R))
 for i in range(nPoints-1,0,-1):
     R = Rs[i]
-    theta, ... = bisect( ... )
+    theta, err, res, conv = bisect(F, split, np.pi/2, kMax, eps_x, eps_f)
     if conv:
         result.append([R,theta])
     else:
